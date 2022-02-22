@@ -1,0 +1,33 @@
+---
+- name: Create user and group
+  block:
+    - name: crt group
+      group:
+        name: "{{ user.group }}"
+
+    - name: crt user
+      user:
+        name: "{{ user.login }}"
+        password: "{{ user.password | password_hash('sha512') }}"
+        shell: /bin/bash
+        group: "{{ user.group }}"
+  rescue:
+    - name: rescue
+      command: date
+- name: install pkgs
+  package:
+    name:
+      - iftop
+      - htop
+      - vim
+      - telnet
+      - unzip
+    state: latest
+- name: mkdir
+  file:
+    path: "{{ '/home/' + user.login + '/'  + user.dir }}"
+    state: directory
+    mode: "u=rw,g=wx,o=rwx"
+    owner: "{{ user.login }}"
+    group: "{{ user.group }}"
+    recurse: yes

@@ -1,0 +1,9 @@
+- name: prepare user
+  hosts: server
+  become: true
+  roles:
+    - {role: os_prepare, tags: [prepare]}
+- name: upload file
+  hosts: aplications
+  roles:
+    - role: upload
